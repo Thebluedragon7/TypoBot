@@ -19,7 +19,7 @@ def get_facts():
 def get_meaning(inWord):
   resp_01 = requests.get('https://api.dictionaryapi.dev/api/v2/entries/en_US/{}'.format(str(inWord)))
   json_data01 = json.loads(resp_01.text)
-  
+
   return "\n".join([f"{inWord}\n {meaning['definitions'][0]['definition']}" for i, meaning in enumerate(json_data01[0]["meanings"])])
   # for meaning in json_data01[0]["meanings"]:
   #   defn = meaning["definitions"][0]["definition"]
@@ -42,7 +42,8 @@ async def on_message(message):
 
   if message.content == 'gimmehelp':
     await message.channel.send("""
-    \n```**TypoBot Help**\ngimmegreet : greets you
+    \n```
+    **TypoBot Help**\ngimmegreet : greets you
     gimmefact  : random facts
     gimmehelp  : help```
     """)
@@ -55,7 +56,7 @@ async def on_message(message):
     await message.channel.send(fact)
   elif message.content.startswith('gd'):
     wrr = message.content.replace('gd ', '')
-    fl_wrr = wrr.replace(' ', '')
+    fl_wrr = wrr.replace(' ', '%20')
     mnng = get_meaning(fl_wrr)
     await message.channel.send(mnng)
 
