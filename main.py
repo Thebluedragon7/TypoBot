@@ -20,9 +20,9 @@ def get_meaning(inWord):
   resp_01 = requests.get('https://api.dictionaryapi.dev/api/v2/entries/en_US/{}'.format(str(inWord)))
   json_data01 = json.loads(resp_01.text)
 
-  mnin = "\n".join([f"{inWord}:\n {meaning['definitions'][0]['definition']}\n" for i, meaning in enumerate(json_data01[0]["meanings"])])
+  mnin = "\n".join([f"{i} {inWord}:\n {meaning['definitions'][0]['definition']}\n" for i, meaning in enumerate(json_data01[0]["meanings"])])
 
-  return mnin
+  return f"```{mnin}```"
   # for meaning in json_data01[0]["meanings"]:
   #   defn = meaning["definitions"][0]["definition"]
   # return defn
