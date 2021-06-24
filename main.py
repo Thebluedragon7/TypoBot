@@ -18,6 +18,20 @@ def get_facts():
   fact = json_data['text']
   return (f'> {fact}')
 
+def typohelp():
+  return """
+    >>> **__𝕋𝕪𝕡𝕠𝔹𝕠𝕥 ℍ𝕖𝕝𝕡__**```
+  𝐁𝐚𝐬𝐢𝐜 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬
+    gimmehelp  : help
+    gimmegreet : greets you
+  𝐆𝐞𝐧𝐞𝐫𝐚𝐥 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬
+    gimmefact  : random facts
+    gimmememe  : random memes
+  𝐀𝐝𝐯𝐚𝐧𝐜𝐞𝐝 𝐂𝐨𝐦𝐦𝐚𝐧𝐝𝐬
+    gd <word> : meaning of word (Dictionary)
+    red : subreddit```
+    """
+
 def get_meaning(inWord):
   resp_01 = requests.get('https://api.dictionaryapi.dev/api/v2/entries/en_US/{}'.format(str(inWord)))
   data01 = resp_01.json()
@@ -26,14 +40,14 @@ def get_meaning(inWord):
     for meaning in data01[0]['meanings']
   ]
   if len(defns) == 1:
-    return f">>> **{inWord}**:\n _{defns[0]}_"
+    return f">>> **__𝕋𝕪𝕡𝕠𝔹𝕠𝕥 𝔻𝕚𝕔𝕥𝕚𝕠𝕟𝕒𝕣𝕪__**\n\n**{inWord}**:\n _{defns[0]}_"
   
   mnin = '\n'.join([
-        f'{i + 1} **{inWord}**:\n _{definition}_\n'
+        f'{i + 1} **{inWord}**:\n _{definition}_'
         for i, definition
         in enumerate(defns)
     ])
-  return f">>> {mnin}"
+  return f">>> **__𝕋𝕪𝕡𝕠𝔹𝕠𝕥 𝔻𝕚𝕔𝕥𝕚𝕠𝕟𝕒𝕣𝕪__**\n\n{mnin}"
 
 def red_get():
   reddit = praw.Reddit(client_id="9F7ooKfQmGGasg", client_secret="MOu78eIT5ly42iyHAms3s4UddlIfUg",user_agent="PythonCoder123333")
@@ -61,9 +75,7 @@ async def on_message(message):
     return
 
   if message.content == 'gimmehelp':
-    await message.channel.send("""
-    >>> **TypoBot Help**\ngimmegreet : _greets you_\ngimmefact  : _random facts_\ngimmehelp  : _help_\nred : _subreddit_\n
-    """)
+    await message.channel.send(typohelp())
   elif message.content.startswith('gimmegreet'):
     await message.channel.send('Hello {0.author}'.format(message))
   elif message.content.startswith('(╯°□°）╯︵ ┻━┻'):
