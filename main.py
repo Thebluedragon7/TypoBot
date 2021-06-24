@@ -16,17 +16,24 @@ def get_facts():
   resp_00 = requests.get('https://uselessfacts.jsph.pl/random.json?language=en')
   json_data = json.loads(resp_00.text)
   fact = json_data['text']
-  return (fact)
+  return (f'> {fact}')
 
 def get_meaning(inWord):
   resp_01 = requests.get('https://api.dictionaryapi.dev/api/v2/entries/en_US/{}'.format(str(inWord)))
-  json_data01 = json.loads(resp_01.text)
-  mnin = "\n".join([f"{i} {inWord}:\n {meaning['definitions'][0]['definition']}\n" for i, meaning in enumerate(json_data01[0]["meanings"])])
-
-  return f"```{mnin}```"
-  # for meaning in json_data01[0]["meanings"]:
-  #   defn = meaning["definitions"][0]["definition"]
-  # return defn
+  data01 = resp_01.json()
+  defns = [
+    meaning['definitions'][0]['definition']
+    for meaning in data01[0]['meanings']
+  ]
+  if len(defns) == 1:
+    return f">>> **{inWord}**:\n _{defns[0]}_"
+  
+  mnin = '\n'.join([
+        f'{i + 1} **{inWord}**:\n _{definition}_\n'
+        for i, definition
+        in enumerate(defns)
+    ])
+  return f">>> {mnin}"
 
 def red_get():
   reddit = praw.Reddit(client_id="9F7ooKfQmGGasg", client_secret="MOu78eIT5ly42iyHAms3s4UddlIfUg",user_agent="PythonCoder123333")
@@ -55,10 +62,7 @@ async def on_message(message):
 
   if message.content == 'gimmehelp':
     await message.channel.send("""
-    >>> TypoBot Help
-    gimmegreet : greets you
-    gimmefact  : random facts
-    gimmehelp  : help
+    >>> **TypoBot Help**\ngimmegreet : _greets you_\ngimmefact  : _random facts_\ngimmehelp  : _help_\nred : _subreddit_\n
     """)
   elif message.content.startswith('gimmegreet'):
     await message.channel.send('Hello {0.author}'.format(message))
@@ -72,7 +76,7 @@ async def on_message(message):
     fl_wrr = wrr.replace(' ', '%20')
     mnng = get_meaning(fl_wrr)
     await message.channel.send(mnng)
-  elif message.content.startswith('red'):
+  elif message.content == 'red':
     red_sub = red_get()
     await message.channel.send(red_sub)
 
